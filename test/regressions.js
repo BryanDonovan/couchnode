@@ -1,6 +1,5 @@
 var assert = require('assert');
 var H = require('../test_harness.js');
-var couchbase = require('../lib/couchbase.js');
 
 describe('#regressions', function() {
 
@@ -11,20 +10,20 @@ describe('#regressions', function() {
 
     // Remove the key to ensure that it is missing when we're trying
     // to do the incr
-    cb.remove(key, function(){});
+    cb.remove(key, function() {});
 
     // Calling increment on a missing key will create the key with
     // the default value (0)
-    cb.incr(key, {initial: 0 }, function(){});
+    cb.incr(key, {initial: 0}, function() {});
 
     // Retrieve the key and validate that the value is set to the
     // default value
-    cb.get(key, H.okCallback(function(result){
+    cb.get(key, H.okCallback(function(result) {
       assert.equal(result.value, "0");
     }));
 
     // Finally remove the key and terminate
-    cb.remove(key, function(){
+    cb.remove(key, function() {
       done();
     });
   });
@@ -32,23 +31,23 @@ describe('#regressions', function() {
   it('JSCBC-14', function(done) {
     var cb = H.newClient();
 
-    cb.on("error", function (message) {
+    cb.on("error", function(message) {
       done(message);
     });
 
     var current = 0;
     var max = 10;
-    for (var i=0; i < max; ++i){
+    for (var i = 0; i < max; ++i) {
       var key = H.genKey('jscbc-14');
 
-      cb.set(key, "something", function(err, meta) {
+      cb.set(key, "something", function(err) {
         if (err) {
-            process.abort();
+          process.abort();
         }
         assert(!err, "Failed to store value" + err);
         ++current;
         if (current == max) {
-           done();
+          done();
         }
       });
     }
@@ -61,7 +60,7 @@ describe('#regressions', function() {
 
     var d = require('domain').create();
     d.on('error', function(err) {
-      if (err.message!='expected-error') {
+      if (err.message != 'expected-error') {
         throw err;
       }
       done();
@@ -69,32 +68,37 @@ describe('#regressions', function() {
 
     d.run(function() {
       var testkey = "18-cb-error.js";
-      cb.get(testkey, function(err, meta) {
+      cb.get(testkey, function() {
         throw new Error('expected-error');
       });
     });
   });
 
-  it('JSCBC-25', function(done) {
-    var cb = H.newClient();
+  // FIXME: this test doesn't actually do anything (the assertions will always throw an error)
+  describe('JSCBC-25', function() {
+    context("when keys arg is a nested array", function() {
+      it("calls back with an error", function(done) {
+        var cb = H.newClient();
 
-    var keys = [[1,2,3],[4,6,3]];
-    try {
-      cb.get(keys, function (err, doc, meta) {
+        var keys = [[1, 2, 3], [4, 6, 3]];
+        cb.get(keys, function(err) {
+          assert.ok(err.message.match(/key is not a string/));
+          done();
+        });
       });
-      assert(false, "Invalid keys should throw exceptions");
-    } catch (err) {
-    }
+    });
+  });
 
-    var keys = [1];
-    try {
-      cb.get(keys, function (err, doc, meta) {
+  context("when keys arg is an array", function() {
+    it("calls back with an error", function(done) {
+      var cb = H.newClient();
+
+      var keys = [1];
+      cb.get(keys, function(err) {
+        assert.ok(err.message.match(/key is not a string/));
+        done();
       });
-      assert(false, "Invalid keys should throw exceptions");
-    } catch (err) {
-    }
-
-    done();
+    });
   });
 
 });

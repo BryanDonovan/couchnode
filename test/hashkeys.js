@@ -11,10 +11,10 @@ describe('#hashkeys', function() {
     var key = H.genKey("hashkey");
     var hashkey = key + "_hashkey";
 
-    cb.set(key, "bar", { hashkey: hashkey }, H.okCallback(function(){
-      cb.get(key, { hashkey: hashkey }, H.okCallback(function(result){
+    cb.set(key, "bar", { hashkey: hashkey }, H.okCallback(function() {
+      cb.get(key, { hashkey: hashkey }, H.okCallback(function(result) {
         assert.equal(result.value, "bar");
-        cb.get(key, function(err, meta){
+        cb.get(key, function(err, meta) {
           assert.ok(err);
           assert.equal(err.code, couchbase.errors.keyNotFound);
           done();

@@ -9,8 +9,8 @@ describe('#durability', function() {
   it('should successfully observe', function(done) {
     var key = H.genKey("observe");
 
-    cb.set(key, "value", H.okCallback(function(meta){
-      cb.observeMulti([key], {}, H.okCallback(function(meta){
+    cb.set(key, "value", H.okCallback(function(meta) {
+      cb.observeMulti([key], {}, H.okCallback(function(meta) {
         assert(typeof meta == "object");
         assert(key in meta);
         assert(typeof meta[key] == 'object');
@@ -25,12 +25,12 @@ describe('#durability', function() {
       function(done) {
     var key = H.genKey("endure");
 
-    cb.set(key, "value", {persist_to:1, replicate_to:0},
-        H.okCallback(function(meta){
-      cb.remove(key, {persist_to:1, replicate_to:0},
+    cb.set(key, "value", {persist_to: 1, replicate_to: 0},
+        H.okCallback(function(meta) {
+      cb.remove(key, {persist_to: 1, replicate_to: 0},
           H.okCallback(function(mera) {
-        cb.add(key, "value", {persist_to:1, replicate_to:0},
-            H.okCallback(function(meta){
+        cb.add(key, "value", {persist_to: 1, replicate_to: 0},
+            H.okCallback(function(meta) {
           done();
         }));
       }));

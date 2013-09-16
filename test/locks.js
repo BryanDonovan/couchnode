@@ -12,7 +12,7 @@ describe('#lock/unlock', function() {
     cb.set(testkey1, "{bar}", H.okCallback(function(meta) {
       cb.lock(testkey1, {locktime: 1 }, H.okCallback(function(result) {
         assert.equal("{bar}", result.value, "Callback called with wrong value!");
-        cb.lock(testkey1, {locktime: 1 }, function (err, meta) {
+        cb.lock(testkey1, {locktime: 1 }, function(err, meta) {
           assert(err);
           assert.equal(err.code, couchbase.errors.temporaryError);
           done();
@@ -29,7 +29,7 @@ describe('#lock/unlock', function() {
     cb.set(testkey2, "{baz}", H.okCallback(function(meta) {
       cb.lock(testkey2, { locktime: 1}, H.okCallback(function(result) {
         assert.equal("{baz}", result.value, "Callback called with wrong value!");
-        setTimeout(function () {
+        setTimeout(function() {
           cb.lock(testkey2, {locktime: 1 }, function(err, meta) {
             assert(!err, "Should be able to reset lock after expiry.");
             done();
@@ -58,7 +58,7 @@ describe('#lock/unlock', function() {
     cb.set(testkey4, "{bam}", H.okCallback(function(result) {
       cb.lock(testkey4, {locktime: 1}, H.okCallback(function(result) {
         assert.equal("{bam}", result.value, "Callback called with wrong value!");
-        cb.set(testkey4, 'nothing', function (err, meta) {
+        cb.set(testkey4, 'nothing', function(err, meta) {
           assert(err);
           done();
         });
@@ -72,7 +72,7 @@ describe('#lock/unlock', function() {
     cb.set(testkey5, "{bark}", H.okCallback(function(meta) {
       cb.lock(testkey5, {locktime: 1}, H.okCallback(function(meta) {
         assert.equal("{bark}", meta.value, "Callback called with wrong value!");
-        cb.set(testkey5, "nothing", meta, function (err, meta) {
+        cb.set(testkey5, "nothing", meta, function(err, meta) {
           assert(!err, "Failed to overwrite locked key by using cas.");
           cb.get(testkey5, H.okCallback(function(result) {
             assert.equal("nothing", result.value, "Callback called with wrong value!");
@@ -91,7 +91,7 @@ describe('#lock/unlock', function() {
         assert.equal("{boo}", meta.value, "Callback called with wrong value!");
         assert('cas' in meta);
         cb.unlock(testkey6, meta, H.okCallback(function() {
-          cb.set(testkey6, 'hello', H.okCallback(function(){
+          cb.set(testkey6, 'hello', H.okCallback(function() {
             done();
           }));
         }));

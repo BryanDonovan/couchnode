@@ -62,73 +62,73 @@ describe('#design documents', function() {
     function TestPopulate(callback) {
       var values = ["alpha", "beta", "kappa", "pi", "epsilon"];
       var valueof = function(i) {
-        return "{ \"type\": 10, \"name\": \""+values[i%values.length]+ "\" }";
+        return "{ \"type\": 10, \"name\": \"" + values[i % values.length] + "\" }";
       };
       var multikv = {};
-      for (var i=0; i< 10000; i++) {
-        multikv["query-"+i.toString()] = { value: valueof(i) };
+      for (var i = 0; i < 10000; i++) {
+        multikv["query-" + i.toString()] = { value: valueof(i) };
       }
-      cb.setMulti(multikv, {spooled:true}, function(){
+      cb.setMulti(multikv, {spooled: true}, function() {
         callback(null, 1);
       });
     }
 
     // Populate design-document with two views by name "simple" and "compound"
     function TestDD(callback) {
-        cb.setDesignDoc(docname, ddoc1, function() {
-          callback(null, 2);
-        });
+      cb.setDesignDoc(docname, ddoc1, function() {
+        callback(null, 2);
+      });
     }
 
     function TestPaginate(callback) {
-        var pages = [];
-        var q = cb.view(docname, "simple", {
-          limit: 140,
-          stale: false
-        });
-        q.firstPage(function(err, results, p) {
-          assert(!err, "TestPaginate firstpage() failed");
-          nextpages(results, p);
-        });
+      var pages = [];
+      var q = cb.view(docname, "simple", {
+        limit: 140,
+        stale: false
+      });
+      q.firstPage(function(err, results, p) {
+        assert(!err, "TestPaginate firstpage() failed");
+        nextpages(results, p);
+      });
 
-        function nextpages(results, p) {
-          pages.push( results );
-          if (p.hasNext()) {
-            p.next( function(err, results) {
-              assert(!err, "TestPaginate next() failed");
-              nextpages(results, p);
-            });
-          } else {
-            assert( pages.length === 72, "TestPaginate failed" );
-            var last = pages.pop();
-            assert( last.length === 60, "TestPaginate failed" );
+      function nextpages(results, p) {
+        pages.push(results);
+        if (p.hasNext()) {
+          p.next(function(err, results) {
+            assert(!err, "TestPaginate next() failed");
+            nextpages(results, p);
+          });
+        } else {
+          assert(pages.length === 72, "TestPaginate failed");
+          var last = pages.pop();
+          assert(last.length === 60, "TestPaginate failed");
 
-            p.prev( function(err, results) {
-              assert(!err, "TestPaginate prev() failed");
-              prevpages(results, p);
-            });
-          }
-        };
+          p.prev(function(err, results) {
+            assert(!err, "TestPaginate prev() failed");
+            prevpages(results, p);
+          });
+        }
+      }
 
-        function prevpages(results, p) {
-          var page = pages.pop();
-          if (results.length > 0 ) {
-            assert( u.isEqual(results, page) );
-            p.prev( function(err, results) {
-                assert(!err, "TestPaginate prev() failed");
-                prevpages(results, p);
-            });
-          } else {
-            p.next( function(err, results) {
-              assert(!err, "TestPaginate next() failed");
-              assert(results.length===140, "TestPaginate 1 next() failed");
-              var l = results.pop();
-              assert(l.id==="query-279", "TestPaginate 1 next() failed");
-              callback(null, 4);
-            });
-          }
-        };
-    };
+      function prevpages(results, p) {
+        var page = pages.pop();
+        if (results.length > 0) {
+          assert(u.isEqual(results, page));
+          p.prev(function(err, results) {
+            assert(!err, "TestPaginate prev() failed");
+            prevpages(results, p);
+          });
+        } else {
+          p.next(function(err, results) {
+            assert(!err, "TestPaginate next() failed");
+            assert(results.length === 140, "TestPaginate 1 next() failed");
+            var l = results.pop();
+            assert(l.id === "query-279", "TestPaginate 1 next() failed");
+            callback(null, 4);
+          });
+        }
+      }
+    }
 
     function Shutdown(callback) {
       done();
@@ -136,10 +136,10 @@ describe('#design documents', function() {
     }
 
     async.series([
-       TestPopulate,
-       TestDD,
-       TestPaginate,
-       Shutdown
+      TestPopulate,
+      TestDD,
+      TestPaginate,
+      Shutdown
     ]);
   });
 
@@ -164,13 +164,13 @@ describe('#design documents', function() {
     function TestPopulate(callback) {
       var values = ["alpha", "beta", "kappa", "pi", "epsilon"];
       var valueof = function(i) {
-        return "{ \"type\": 10, \"name\": \""+values[i%values.length]+ "\" }";
+        return "{ \"type\": 10, \"name\": \"" + values[i % values.length] + "\" }";
       };
       var multikv = {};
-      for (var i=0; i< 10000; i++) {
-        multikv["query-"+i.toString()] = { value: valueof(i) };
+      for (var i = 0; i < 10000; i++) {
+        multikv["query-" + i.toString()] = { value: valueof(i) };
       }
-      cb.setMulti(multikv, {spooled:true}, function(){
+      cb.setMulti(multikv, {spooled: true}, function() {
         callback(null, 1);
       });
     }
@@ -193,10 +193,10 @@ describe('#design documents', function() {
       q.query(function(err, results) {
         var sum = u.reduce(
           u.pluck(results, 'key'),
-          function(acc, n){ return acc + n; }, 0
+          function(acc, n) { return acc + n; }, 0
         );
         assert(!err, "TestRange query failed");
-        assert(sum===10, "TestRange without inclusive_end does not add up");
+        assert(sum === 10, "TestRange without inclusive_end does not add up");
 
         // Along with it use `limit` parameter
         q.query({limit: 3}, function(err, results) {
@@ -218,20 +218,20 @@ describe('#design documents', function() {
     // Range query in descending order.
     function TestRangeD(callback) {
       var q = cb.view(docname, "simple", {
-              endkey : 3,
-              startkey : 10,
-              stale: false,
-              descending : true,
-              limit : 10
+        endkey : 3,
+        startkey : 10,
+        stale: false,
+        descending : true,
+        limit : 10
       });
       q.query(function(err, results) {
         assert(!err, "TestRangeD query failed");
         assert(results[0].key > results[1].key, "TestRangeD not descending");
         var sum = u.reduce(
           u.pluck(results, 'key'),
-          function(acc, n){ return acc + n; }, 0
+          function(acc, n) { return acc + n; }, 0
         );
-        assert(sum===52, "TestRange without inclusive_end does not add up");
+        assert(sum === 52, "TestRange without inclusive_end does not add up");
 
         // Apply `limit`
         q.query({limit: 3}, function(err, results) {
@@ -253,11 +253,11 @@ describe('#design documents', function() {
     // Test key and keys
     function TestKeys(callback) {
       var q = cb.view(docname, "simple", {
-        key : 1,
+        key: 1,
         stale: false,
       });
       var cq = cb.view(docname, "simple", {
-        keys : [1, 10],
+        keys: [1, 10],
         stale: false,
       });
       q.query(function(err, results) {
@@ -265,7 +265,7 @@ describe('#design documents', function() {
         assert(results.length === 1, "TestKeys expected only one result");
 
         // Fetch key within a range.
-        var q1 = q.clone({startkey:1, endkey:5, key:1});
+        var q1 = q.clone({startkey: 1, endkey: 5, key: 1});
         q1.query(function(err, results) {
           // console.log(results);
 
@@ -286,55 +286,55 @@ describe('#design documents', function() {
     // Include full document while querying for them.
     function TestIncludeDocs(callback) {
       var q = cb.view(docname, "simple", {
-        startkey : 1,
-        endkey : 5,
+        startkey: 1,
+        endkey: 5,
         stale: false,
-        include_docs : true,
+        include_docs: true,
         inclusive_end: false,
       });
       q.query(function(err, results) {
         assert(!err, "TestIncludeDocs query failed");
         assert(
             results[0].doc.meta.id === 'query-1',
-            "TestIncludeDocs meta.id mismatch" );
+            "TestIncludeDocs meta.id mismatch");
         assert(
             results[0].doc.json.name === 'beta',
-            "TestIncludeDocs meta.id mismatch" );
+            "TestIncludeDocs meta.id mismatch");
         callback(null, 5);
       });
     }
 
     // Test compound keys.
     function TestCompound(callback) {
-      var q1 = cb.view( docname, "compound", {
-        startkey : ["beta"],
-        endkey : ["epsilon"],
+      var q1 = cb.view(docname, "compound", {
+        startkey: ["beta"],
+        endkey: ["epsilon"],
         stale: false,
-        reduce : false,
-        limit : 10000
+        reduce: false,
+        limit: 10000
       });
       var q2 = q1.clone({
-        startkey : ["epsilon"],
-        endkey : ["beta"],
+        startkey: ["epsilon"],
+        endkey: ["beta"],
         stale: false,
-        reduce : false,
-        descending : true,
-        limit : 10000
+        reduce: false,
+        descending: true,
+        limit: 10000
       });
-      q1.query( function(err, results) {
+      q1.query(function(err, results) {
         assert(!err, "TestCompound query failed");
-        assert( results.length === 2000,
-                "Failed TestCompound without reduce" );
+        assert(results.length === 2000,
+                "Failed TestCompound without reduce");
 
         // With decending
-        q2.query( function(err, results) {
+        q2.query(function(err, results) {
           assert(!err, "TestCompound query with descending failed");
           assert(
               results.length === 2000,
-              "Failed TestCompound descending without reduce" );
+              "Failed TestCompound descending without reduce");
           assert(
               results[0].key > results[1].key,
-              "Failed TestCompound descending without reduce" );
+              "Failed TestCompound descending without reduce");
           callback(null, 7);
         });
       });
@@ -342,7 +342,7 @@ describe('#design documents', function() {
 
     function TestGroup(callback) {
       var results1 = null;
-      var q = cb.view( docname, "compound", {
+      var q = cb.view(docname, "compound", {
         startkey: ["beta"],
         endkey: ["pi"],
         stale: false,
@@ -372,7 +372,7 @@ describe('#design documents', function() {
             // With decending.
             q3.query(function(err, results) {
               assert(!err, "TestGroup failed ");
-              assert(results.length===3, "TestGroup level 1 failed");
+              assert(results.length === 3, "TestGroup level 1 failed");
               assert(
                   results[0].key[0] === 'kappa',
                   "TestGroup level 1 failed"
@@ -394,15 +394,15 @@ describe('#design documents', function() {
     }
 
     async.series([
-            TestPopulate,
-            TestDD,
-            TestRange,
-            TestRangeD,
-            TestKeys,
-            TestIncludeDocs,
-            TestCompound,
-            TestGroup,
-            Shutdown
+      TestPopulate,
+      TestDD,
+      TestRange,
+      TestRangeD,
+      TestKeys,
+      TestIncludeDocs,
+      TestCompound,
+      TestGroup,
+      Shutdown
     ]);
   });
 

@@ -22,8 +22,12 @@ install:
 node_modules:
 	@npm install
 
-check: node_modules
+check: node_modules lint
 	mocha
+
+lint:
+	./node_modules/.bin/jshint ./lib --config .jshintrc && \
+	./node_modules/.bin/jshint ./test --config test/.jshintrc
 
 reformat:
 	@astyle --mode=c \

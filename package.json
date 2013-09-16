@@ -13,6 +13,7 @@
     },
     "devDependencies": {
       "async": "0.2.9",
+      "jshint": ">0",
       "longjohn": "0.2.1",
       "underscore": "1.5.1"
     },

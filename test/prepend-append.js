@@ -9,9 +9,9 @@ describe('#prepend/append', function() {
   it('should fail to prepend to missing key', function(done) {
     var key = H.genKey("append");
 
-    cb.remove(key, function(){});
+    cb.remove(key, function() {});
 
-    cb.append(key, 'willnotwork', function(err, meta){
+    cb.append(key, 'willnotwork', function(err) {
       assert.equal(err.code, couchbase.errors.notStored);
       done();
     });
@@ -19,8 +19,8 @@ describe('#prepend/append', function() {
 
   it('should fail to append to missing key', function(done) {
     var key = H.genKey("prepend");
-    cb.remove(key, function(){});
-    cb.prepend(key, 'willnotwork', function(err, meta){
+    cb.remove(key, function() {});
+    cb.prepend(key, 'willnotwork', function(err) {
       assert.equal(err.code, couchbase.errors.notStored);
       done();
     });

@@ -1,6 +1,5 @@
 var assert = require('assert');
 var H = require('../test_harness.js');
-var couchbase = require('../lib/couchbase.js');
 
 // Generates a new client for each test as the tests
 //  meddle with the state of the connection.
@@ -11,7 +10,7 @@ describe('#shutdown', function() {
     var cb = H.newClient();
     var key = H.genKey("shutdown-1");
 
-    H.setGet(key, "foo", function(doc){
+    H.setGet(key, "foo", function() {
       cb.shutdown();
       done();
     });
@@ -20,9 +19,9 @@ describe('#shutdown', function() {
   it('should not fail when calling shutdown multiple times', function(done) {
     var cb = H.newClient();
 
-    cb.set("key", "value", H.okCallback(function(meta){
+    cb.set("key", "value", H.okCallback(function() {
       cb.shutdown();
-      cb.get("key", function(err, meta){});
+      cb.get("key", function() {});
       cb.shutdown();
       done();
     }));
@@ -31,10 +30,10 @@ describe('#shutdown', function() {
   it('should fail operations after shutdown', function(done) {
     var cb = H.newClient();
 
-    cb.set("key", "value", function(err, meta) {
+    cb.set("key", "value", function() {
       cb.shutdown();
       setTimeout(function() {
-        cb.get("key", function(err, meta){
+        cb.get("key", function(err) {
           assert(err, "Operation fails after shutdown");
           done();
         });

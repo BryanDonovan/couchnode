@@ -19,13 +19,13 @@ describe('#getMulti/setMulti', function() {
     }
 
     function doGets() {
-      cb.get(keys[0], H.okCallback(function(doc){
+      cb.get(keys[0], H.okCallback(function(doc) {
         assert.equal(doc.value, values[keys[0]].value);
       }));
 
-      cb.getMulti(keys, null, H.okCallback(function(meta){
+      cb.getMulti(keys, null, H.okCallback(function(meta) {
         assert.equal(keys.length, Object.keys(meta).length);
-        Object.keys(meta).forEach(function(k){
+        Object.keys(meta).forEach(function(k) {
           assert(values[k] !== undefined);
           assert(meta[k] !== undefined);
           assert(meta[k].value === values[k].value);
