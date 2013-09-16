@@ -13,7 +13,10 @@
     },
     "devDependencies": {
       "async": "0.2.9",
+      "istanbul": "0.1.43",
       "longjohn": "0.2.1",
+      "mocha": "1.13.0",
+      "optimist": "0.6.0",
       "underscore": "1.5.1"
     },
     "repository" : { "type" : "git", "url" : "http://github.com/couchbase/couchnode.git" },

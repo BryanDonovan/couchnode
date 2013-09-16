@@ -7,6 +7,9 @@ SOURCE = src/buflist.h src/cas.cc src/cas.h src/commandbase.cc  \
          src/options.cc src/options.h src/uv-plugin-all.c       \
          src/valueformat.cc src/valueformat.h
 
+ISTANBUL = ./node_modules/.bin/istanbul
+COVERAGE_OPTS = --lines 78 --statements 78 --branches 60 --functions 75
+
 all: binding $(SOURCE)
 	@node-gyp build
 
@@ -22,8 +25,15 @@ install:
 node_modules:
 	@npm install
 
-check: node_modules
-	mocha
+check: node_modules test
+
+test: cover check-coverage
+
+cover:
+	$(ISTANBUL) cover test/run.js
+
+check-coverage:
+	$(ISTANBUL) check-coverage $(COVERAGE_OPTS)
 
 reformat:
 	@astyle --mode=c \
